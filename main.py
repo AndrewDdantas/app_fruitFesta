@@ -1,6 +1,13 @@
 import streamlit as st
 from time import sleep
 
+st.set_page_config(
+    page_title="Roterizador",
+    page_icon="",
+    layout="centered", 
+    initial_sidebar_state="collapsed",
+)
+
 with st.form('LoginForm'):
     st.title('Bem Vindo, insira seu login:')
     col1, col2 = st.columns(2)
