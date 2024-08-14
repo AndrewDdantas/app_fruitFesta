@@ -65,6 +65,7 @@ if arquivo or st.session_state.uploaded_file:
         merge['distância'] = merge['distância'].apply(lambda x: f'{int(x/1000)} Km'.replace(',','.'))        
         merge['duração'] = merge['duração'].apply(func.converter_segundos)
         doc = func.criar_romaneio(merge, volumes, duracao, distancia)
+        st.text('Romaneio gerado com sucesso, clique para baixar.")
 
         buffer = BytesIO()
         doc.save(buffer)
