@@ -1,14 +1,15 @@
 import streamlit as st
 from time import sleep
 
-st.title("Bem vindo ao APP FruitFesta")
-
 with st.form('LoginForm'):
-    User = st.text_input('Usuário')
+    col1, col2 = st.columns(2)
+    col1.image('./logo.png')
+    col2.title('Bem Vindo, insira seu login e senha.')
+    User = col2.text_input('Usuário')
 
-    Pass = st.text_input("Senha",type='password')
+    Pass = col2.text_input("Senha",type='password')
 
-    login_button = st.form_submit_button("Login")
+    login_button = col2.form_submit_button("Login")
 
     if login_button:
         if Pass == st.secrets['pass'] and User == st.secrets['user']:
