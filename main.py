@@ -2,7 +2,7 @@ import streamlit as st
 from time import sleep
 
 with st.form('LoginForm'):
-    st.title('Bem Vindo, insira seu login e senha.')
+    st.title('Bem Vindo, insira seu login:')
     col1, col2 = st.columns(2)
     col1.image('./logo.png')
     User = col2.text_input('Usuário')
