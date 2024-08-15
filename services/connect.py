@@ -111,6 +111,6 @@ def criar_romaneio(merge,volumes, tempo, km):
     # Adicionar parágrafos para cada cliente
     for index, row in merge.iterrows():
         # Nome do cliente
-        doc.add_paragraph(f"Cliente: {row['ClienteDesc']} | Endereço: {row['endereço']}\nAssinatura:{adicionar_linha_horizontal()}").paragraph_format.space_after = Pt(10)
+        doc.add_paragraph(f"Pedido: {row['OV']} | Nota: {row['Nota']}| Cliente: {row['ClienteDesc']} | Endereço: {row['endereço']}\nAssinatura:{adicionar_linha_horizontal()}").paragraph_format.space_after = Pt(10)
 
     return doc
