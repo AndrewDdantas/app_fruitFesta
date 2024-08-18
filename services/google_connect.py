@@ -3,6 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 import streamlit as st
+import pandas as pd
 
 json = {
     "type": "service_account",
@@ -73,3 +74,13 @@ def upload_data_package(routes, link, email):
     rotas.loc[len(rotas)-1,'ClienteDesc'] = 'FruitFesta'
     packing_sheet.update([[int(packing_sheet.get_values('a2:d')[-1][0])+1, rotas['OV'].nunique(), email[1],link]],f'a{len(packing_sheet.get_values('a1:a'))+1}')
     route_sheet.update(rotas.values.tolist() , f'a{len(route_sheet.get_values('a1:a'))+1}')
+
+
+def get_package():
+    df = pd.DataFrame(packing_sheet.get_all_values())  
+    df.columns = df.iloc[0]
+    df = df.iloc[1:]
+    return df
+
+def update_package(df):
+    packing_sheet.update(df.values.tolist(), 'a2')
