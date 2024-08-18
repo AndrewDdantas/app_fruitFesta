@@ -1,7 +1,7 @@
 import gspread as gs
 from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaFileUpload
 import streamlit as st
 
 json = {
@@ -36,11 +36,15 @@ def get_drivers():
     return driver_sheet.get_values('a2:b')
 
 def upload_arquivo(documento, nome):
-
+    nome = str(nome)
+    caminho_arquivo = f"{nome}.docx"
+    
+    # Salva o documento localmente
+    documento.save(caminho_arquivo)
 
     # Configura os metadados do arquivo para o upload no Google Drive
-    file_metadata = {'name': documento}
-    media = MediaIoBaseUpload(documento, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    file_metadata = {'name': caminho_arquivo}
+    media = MediaFileUpload(caminho_arquivo, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     
     # Faz o upload do arquivo
     file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
