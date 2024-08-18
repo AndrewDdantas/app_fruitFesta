@@ -23,37 +23,55 @@ st.sidebar.page_link('./pages/Package.py')
 if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
 
+
 arq_st = st.empty()
 arquivo = arq_st.file_uploader("Favor inserir arquivo.")
 
 df_amostra = st.empty()
-
+    
 if arquivo or st.session_state.uploaded_file:
     st.session_state.uploaded_file = arquivo or st.session_state.uploaded_file
 
-    aggDF = pd.read_excel(st.session_state.uploaded_file).groupby(['ClienteDesc','Geolocalização']).agg({
-            'OV': lambda x: ', '.join(map(str, x)), 
-            'Nota': lambda x: ', '.join(map(str, x)),
+def processar_dados(uploaded_file):
+    aggDF = pd.read_excel(uploaded_file).groupby(['ClienteDesc', 'Geolocalização']).agg({
+        'OV': lambda x: ', '.join(map(str, x)), 
+        'Nota': lambda x: ', '.join(map(str, x)),
         'Volumes': 'sum',
         'TOTAL': 'sum'
     }).reset_index()
 
+    # Ajustar coordenadas
     aggDF['Geolocalização'] = aggDF['Geolocalização'].apply(func.ajustar_cord)
     aggDF['Geolocalização'] = aggDF['Geolocalização'].replace(r'\s+', '', regex=True)
     aggDF['Geolocalização'] = aggDF['Geolocalização'].replace('\n', '', regex=False)
 
+    # Gerar endereços e distâncias
     waypoints = aggDF['Geolocalização'].values.tolist()
     dist = pd.DataFrame(func.gerar_endereco(waypoints=waypoints))
 
+    # Merge de distâncias e ordenar por distância
     aggDF = pd.merge(aggDF, dist, 'left', left_on='Geolocalização', right_on=1)
     aggDF = aggDF.sort_values(2, ascending=False) 
-    df_visu = aggDF[['OV', 'Nota', 'ClienteDesc', 'Geolocalização', 0, 2, 'Volumes', 'TOTAL']]
+
+    return aggDF
+
+if 'file' not in st.session_state:
+    if st.session_state.uploaded_file:
+        aggDF = processar_dados(st.session_state.uploaded_file)
+        st.session_state.file = aggDF
+
+if 'file' in st.session_state:
+    df_visu = st.session_state.file[['OV', 'Nota', 'ClienteDesc', 'Geolocalização', 0, 2, 'Volumes', 'TOTAL']]
     df_visu.columns = ['Ordem Venda', 'Notas', 'Cliente', 'Localização', 'Endereço', 'Distância', 'Volumes', 'Total']
+
+    # Formatação
     df_visu['Distância'] = df_visu['Distância'].apply(lambda x: f'{int(x/1000)} Km'.replace(',','.'))
     df_visu['Volumes'] = df_visu['Volumes'].apply(lambda x: "{:,.0f}".format(x).replace(',', 'X').replace('.', ',').replace('X', '.'))
     df_visu['Total'] = df_visu['Total'].apply(lambda x: "{:,.0f}".format(x).replace(',', 'X').replace('.', ',').replace('X', '.'))
 
     df_amostra.dataframe(df_visu, hide_index=True)
+
+    # Seleção de motorista
     driver = st.selectbox('Qual motorista irá fazer a rota?', gcf.get_drivers())
     button = st.button('Gerar Romaneio')
 
