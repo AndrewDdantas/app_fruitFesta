@@ -74,7 +74,7 @@ if arquivo or st.session_state.uploaded_file:
         doc.save(buffer)
         buffer.seek(0)
 
-        file_link = gcf.upload_arquivo(buffer, f'Romaneio_{last_row}.docx')
+        file_link = gcf.upload_arquivo(doc, f'Romaneio_{last_row}.docx')
         st.text(file_link)
         st.download_button(
             label="Baixar Romaneio",
