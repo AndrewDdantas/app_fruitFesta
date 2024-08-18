@@ -35,7 +35,7 @@ driver_sheet = worksheet.worksheet('MOTORISTAS')
 def get_drivers():
     return driver_sheet.get_values('a2:b')
 
-def get_last_row()
+def get_last_row():
     return  int(packing_sheet.get_values('a2:d')[-1][0])+1
     
 
