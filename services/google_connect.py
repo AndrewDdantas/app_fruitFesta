@@ -35,6 +35,10 @@ driver_sheet = worksheet.worksheet('MOTORISTAS')
 def get_drivers():
     return driver_sheet.get_values('a2:b')
 
+def get_last_row()
+    return  int(packing_sheet.get_values('a2:d')[-1][0])+1
+    
+
 def upload_arquivo(documento, nome):
     nome = str(nome)
     caminho_arquivo = f"{nome}.docx"
@@ -61,12 +65,11 @@ def upload_arquivo(documento, nome):
     
     return file_link
 
-def upload_data_package(routes):
+def upload_data_package(routes, link):
     last_row = int(packing_sheet.get_values('a2:d')[-1][0])+1
     rotas = routes[['OV','ClienteDesc','localização']]
     rotas['KEY'] = int(packing_sheet.get_values('a2:d')[-1][0])+1
     rotas = rotas[['KEY','OV','ClienteDesc','localização']]
     rotas.loc[len(rotas)-1,'ClienteDesc'] = 'FruitFesta'
-    packing_sheet.update([[int(packing_sheet.get_values('a2:d')[-1][0])+1, rotas['OV'].nunique(), '', 'andrewdantas15@gmail.com']],f'a{len(packing_sheet.get_values('a1:a'))+1}')
+    packing_sheet.update([[int(packing_sheet.get_values('a2:d')[-1][0])+1, rotas['OV'].nunique(), '', 'andrewdantas15@gmail.com',link]],f'a{len(packing_sheet.get_values('a1:a'))+1}')
     route_sheet.update(rotas.values.tolist() , f'a{len(route_sheet.get_values('a1:a'))+1}')
-    return last_row
