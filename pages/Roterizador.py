@@ -51,7 +51,7 @@ if arquivo or st.session_state.uploaded_file:
     df_visu['Total'] = df_visu['Total'].apply(lambda x: "{:,.0f}".format(x).replace(',', 'X').replace('.', ',').replace('X', '.'))
 
     df_amostra.dataframe(df_visu, hide_index=True)
-
+    driver = st.selectbox('Qual motorista irá fazer a rota?', gcf.get_drivers())
     button = st.button('Gerar Romaneio')
 
     if button:
@@ -76,7 +76,7 @@ if arquivo or st.session_state.uploaded_file:
         buffer.seek(0)
 
         file_link = gcf.upload_arquivo(doc, f'Romaneio_{last_row}.docx')
-        gcf.upload_data_package(rotas_df,file_link)
+        gcf.upload_data_package(rotas_df,file_link,driver)
         st.text(file_link)
         st.download_button(
             label="Baixar Romaneio",
@@ -84,6 +84,7 @@ if arquivo or st.session_state.uploaded_file:
             file_name=f"Romaneio_{last_row}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        arq_st.empty()  
+        arq_st.empty()
+        st.session_state.uploaded_file = None
         df_amostra.empty()
         st.session_state.uploaded_file = None
