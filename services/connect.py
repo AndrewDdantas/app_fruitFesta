@@ -62,7 +62,8 @@ def gerar_rota(rotas,gmaps=gmaps):
             endereco = leg['end_address']
             distancia = leg['distance']['value']
             duracao = leg['duration']['value']
-            informacoes.append({'endereço': endereco, 'distância': distancia, 'duração':duracao})
+            loc = f'{leg['end_location']['lat']},{leg['end_location']['lng']}'
+            informacoes.append({'endereço': endereco, 'distância': distancia, 'duração':duracao, 'localização':loc})
     return informacoes
 
 
@@ -84,7 +85,7 @@ def substituir_chaves(paragraphs, substitutions):
             if key in paragraph.text:
                 paragraph.text = paragraph.text.replace(key, str(value))
                 
-def criar_romaneio(merge,volumes, tempo, km):
+def criar_romaneio(merge,volumes, tempo, km,row):
 # Abrir o documento existente
     doc = Document('./romaneio_modelo.docx')
 
@@ -92,7 +93,8 @@ def criar_romaneio(merge,volumes, tempo, km):
     substituicoes = {
         '<<tt_rota>>': km,
         '<<pc>>': f'{volumes} peças',
-        '<<tm>>': tempo
+        '<<tm>>': tempo,
+        '<<Nr>>': f"{row}"
     }
 
     # Substituir as chaves no documento
