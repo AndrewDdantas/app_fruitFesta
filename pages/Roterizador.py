@@ -78,7 +78,7 @@ if arquivo or st.session_state.uploaded_file:
         file_link = gcf.upload_arquivo(doc, f'Romaneio_{last_row}.docx')
         gcf.upload_data_package(rotas_df,file_link,driver)
         st.text(file_link)
-        st.download_button(
+        downbutton = st.download_button(
             label="Baixar Romaneio",
             data=buffer,
             file_name=f"Romaneio_{last_row}.docx",
@@ -88,3 +88,5 @@ if arquivo or st.session_state.uploaded_file:
         st.session_state.uploaded_file = None
         df_amostra.empty()
         st.session_state.uploaded_file = None
+        if downbutton:
+            st.switch_page('./pages/Package.py')
