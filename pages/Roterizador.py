@@ -77,8 +77,8 @@ if 'file' in st.session_state:
 
     if button:
         df_amostra.empty()
-        rotas = func.divide_em_blocos(aggDF['Geolocalização'].values.tolist(), 20)
-        aggDF = aggDF[['Nota', 'OV', 'ClienteDesc', 'Volumes', 'TOTAL', 0]]
+        rotas = func.divide_em_blocos(st.session_state.file['Geolocalização'].values.tolist(), 20)
+        aggDF = st.session_state.file[['Nota', 'OV', 'ClienteDesc', 'Volumes', 'TOTAL', 0]]
         merge = pd.merge(aggDF, pd.DataFrame(func.gerar_rota(rotas=rotas)), 'right', left_on=0, right_on='endereço')
         rotas_df = merge[['OV','ClienteDesc','localização']].fillna(0)
         last_row = gcf.get_last_row()
