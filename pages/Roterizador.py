@@ -59,8 +59,9 @@ if arquivo or st.session_state.uploaded_file:
         rotas = func.divide_em_blocos(aggDF['Geolocalização'].values.tolist(), 20)
         aggDF = aggDF[['Nota', 'OV', 'ClienteDesc', 'Volumes', 'TOTAL', 0]]
         merge = pd.merge(aggDF, pd.DataFrame(func.gerar_rota(rotas=rotas)), 'right', left_on=0, right_on='endereço')
+        rotas_df = merge[['OV','ClienteDesc','localização']].fillna(0)
+        last_row = gcf.upload_data_package(rotas_df)
         merge = merge[['Nota', 'OV', 'endereço', 'distância', 'duração', 'ClienteDesc', 'Volumes', 'TOTAL']].fillna(0)
-        last_row = gcf.upload_data_package(merge)
 
         volumes = "{:,.0f}".format(merge['Volumes'].sum()).replace(',', 'X').replace('.', ',').replace('X', '.')
         duracao = func.converter_segundos(merge['duração'].sum())
