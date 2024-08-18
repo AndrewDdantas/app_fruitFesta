@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import services.connect as func
+import services.google_connect as gcf
 from io import BytesIO
 
 st.set_page_config(
@@ -59,6 +60,8 @@ if arquivo or st.session_state.uploaded_file:
         aggDF = aggDF[['Nota', 'OV', 'ClienteDesc', 'Volumes', 'TOTAL', 0]]
         merge = pd.merge(aggDF, pd.DataFrame(func.gerar_rota(rotas=rotas)), 'right', left_on=0, right_on='endereço')
         merge = merge[['Nota', 'OV', 'endereço', 'distância', 'duração', 'ClienteDesc', 'Volumes', 'TOTAL']].fillna(0)
+        last_row = gcf.upload_data_package(merge)
+
         volumes = "{:,.0f}".format(merge['Volumes'].sum()).replace(',', 'X').replace('.', ',').replace('X', '.')
         duracao = func.converter_segundos(merge['duração'].sum())
         distancia = f'{int(merge['distância'].sum()/1000)} Km'.replace(',','.')
@@ -70,7 +73,9 @@ if arquivo or st.session_state.uploaded_file:
         buffer = BytesIO()
         doc.save(buffer)
         buffer.seek(0)
-        
+
+        file_link = gcf.upload_arquivo(buffer, f'Romaneio_{last_row}.docx')
+        st.text(file_link)
         st.download_button(
             label="Baixar Romaneio",
             data=buffer,
