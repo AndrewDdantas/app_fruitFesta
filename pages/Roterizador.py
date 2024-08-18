@@ -18,7 +18,7 @@ except:
 
 st.sidebar.image('./logo.png')
 st.sidebar.page_link('./pages/Home_Page.py')
-st.sidebar.page_link('./pages/Package.py', 'Romaneios')
+st.sidebar.page_link('./pages/Package.py')
 
 if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
