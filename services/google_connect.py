@@ -3,15 +3,28 @@ from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
+json = {
+    "type": "service_account",
+    "project_id": st.secrets['project_id'],
+    "private_key_id": st.secrets['KEY'],
+    "private_key": st.secrets['private_key'],
+    "client_email": st.secrets['client_email'],
+    "client_id": st.secrets['client_id'],
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/case-693%40digital-layout-402513.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+    }
 
 scope = ['https://spreadsheets.google.com/feeds',
         'https://www.googleapis.com/auth/drive'] 
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    './credentials.json', scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+    json, scope)
 client = gs.authorize(credentials)
 drive_service = build('drive', 'v3', credentials=credentials)
 
-worksheet = client.open_by_key('1k_KoUupNSWdSG8ExFtxR-LnTSJ0Dr8c_XDks1SowL7Q')
+worksheet = client.open_by_key(st.secrets['sheet'])
 
 route_sheet = worksheet.worksheet('ROTAS')
 packing_sheet = worksheet.worksheet('ROMANEIOS')
