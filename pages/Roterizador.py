@@ -60,7 +60,7 @@ if arquivo or st.session_state.uploaded_file:
         aggDF = aggDF[['Nota', 'OV', 'ClienteDesc', 'Volumes', 'TOTAL', 0]]
         merge = pd.merge(aggDF, pd.DataFrame(func.gerar_rota(rotas=rotas)), 'right', left_on=0, right_on='endereço')
         rotas_df = merge[['OV','ClienteDesc','localização']].fillna(0)
-        last_row = gcf.upload_data_package(rotas_df)
+        last_row = gcf.get_last_row()
         merge = merge[['Nota', 'OV', 'endereço', 'distância', 'duração', 'ClienteDesc', 'Volumes', 'TOTAL']].fillna(0)
 
         volumes = "{:,.0f}".format(merge['Volumes'].sum()).replace(',', 'X').replace('.', ',').replace('X', '.')
@@ -76,11 +76,12 @@ if arquivo or st.session_state.uploaded_file:
         buffer.seek(0)
 
         file_link = gcf.upload_arquivo(doc, f'Romaneio_{last_row}.docx')
+        gcf.upload_data_package(rotas_df,file_link)
         st.text(file_link)
         st.download_button(
             label="Baixar Romaneio",
             data=buffer,
-            file_name="romaneio_gerado.docx",
+            file_name=f"Romaneio_{last_row}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
         arq_st.empty()  
