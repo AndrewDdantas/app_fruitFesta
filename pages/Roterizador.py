@@ -51,7 +51,7 @@ def processar_dados(uploaded_file):
 
     # Merge de distâncias e ordenar por distância
     aggDF = pd.merge(aggDF, dist, 'left', left_on='Geolocalização', right_on=1)
-    aggDF = aggDF.sort_values(2, ascending=False) 
+    aggDF = aggDF.sort_values(2, ascending=True) 
 
     return aggDF
 
