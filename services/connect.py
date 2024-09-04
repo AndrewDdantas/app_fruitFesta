@@ -23,16 +23,19 @@ def ajustar_cord(row):
     else:
         return row.replace(' ','')
 
-def gerar_endereco(gmaps=gmaps, origem='R. Uirapuru, 316 - Santa Monica, Feira de Santana - BA, 44078-250',waypoints=None):
-    matrix = gmaps.distance_matrix(origins=[origem], destinations=waypoints, mode="driving")
+# Função para gerar endereços em blocos menores
+def gerar_endereco(gmaps=gmaps, origem='R. Uirapuru, 316 - Santa Monica, Feira de Santana - BA, 44078-250', waypoints=None, chunk_size=20):
     address_distance_list = []
-    for destination, way,element in zip(matrix['destination_addresses'], waypoints, matrix['rows'][0]['elements']):
-        if element['status'] == 'OK':
-            distance = element['distance']['value']  # Distância em metros
-        else:
-            distance = None  # No caso de falha na busca
-        
-        address_distance_list.append((destination,way, distance))
+    for i in range(0, len(waypoints), chunk_size):
+        chunk = waypoints[i:i + chunk_size]
+        matrix = gmaps.distance_matrix(origins=[origem], destinations=chunk, mode="driving")
+        for destination, way, element in zip(matrix['destination_addresses'], chunk, matrix['rows'][0]['elements']):
+            if element['status'] == 'OK':
+                distance = element['distance']['value']  # Distância em metros
+            else:
+                distance = None  # No caso de falha na busca
+            address_distance_list.append((destination, way, distance))
+    
     distancia = pd.DataFrame(address_distance_list).drop_duplicates()
     return distancia
 
