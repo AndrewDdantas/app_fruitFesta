@@ -48,7 +48,6 @@ def divide_em_blocos(lista, tamanho_bloco):
         if i != 0:
             bloco.insert(0, blocos[-1][-1])
         blocos.append(bloco)
-    bloco.insert(len(blocos[-1]), origem)
     return blocos
 
 def gerar_rota(rotas,gmaps=gmaps):
